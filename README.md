@@ -220,15 +220,17 @@ docker exec -it medical-rag-postgres psql -U postgres -d medical_rag \
 
 | 서비스 | 주소 |
 |--------|------|
-| 프론트엔드 | http://ec2-13-125-120-134.ap-northeast-2.compute.amazonaws.com:3000 |
-| 백엔드 API | http://ec2-13-125-120-134.ap-northeast-2.compute.amazonaws.com:8080 |
-| Swagger UI | http://ec2-13-125-120-134.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui.html |
+| 프론트엔드 | http://{EC2_PUBLIC_DNS}:3000 |
+| 백엔드 API | http://{EC2_PUBLIC_DNS}:8080 |
+| Swagger UI | http://{EC2_PUBLIC_DNS}:8080/swagger-ui.html |
+
+> `{EC2_PUBLIC_DNS}` 는 AWS 콘솔 → EC2 → 인스턴스 → 퍼블릭 DNS 값으로 교체하세요.
 
 ### EC2 배포 순서
 
 ```bash
 # 1. EC2 접속
-ssh -i your-key.pem ubuntu@ec2-13-125-120-134.ap-northeast-2.compute.amazonaws.com
+ssh -i your-key.pem ubuntu@{EC2_PUBLIC_DNS}
 
 # 2. Docker 설치
 sudo apt update && sudo apt upgrade -y
