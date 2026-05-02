@@ -208,13 +208,13 @@ docker exec -it medical-rag-postgres psql -U postgres -d medical_rag \
 
 ### 인프라 구성
 
-| 항목 | 내용                  |
-|------|---------------------|
-| Cloud | AWS EC2             |
+| 항목 | 내용                 |
+|------|--------------------|
+| Cloud | AWS EC2            |
 | 리전 | ap-northeast-2 (서울) |
-| OS | Ubuntu 22.04 LTS    |
-| 인스턴스 | t2.small            |
-| 스토리지 | 30GB gp3            |
+| OS | Ubuntu 22.04 LTS   |
+| 인스턴스 | t2.small           |
+| 스토리지 | 30GB gp3           |
 
 ### 접속 주소
 
