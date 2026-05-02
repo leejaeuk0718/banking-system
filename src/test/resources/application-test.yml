@@ -1,0 +1,29 @@
+# ── 통합 테스트 프로파일 ─────────────────────────────────────────────────────
+# PostgreSQL 연결 정보는 Testcontainers @ServiceConnection 이 자동 주입하므로 여기서 지정하지 않는다.
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop     # 테스트마다 스키마 재생성
+    show-sql: false
+
+  # Redis — 테스트 환경에서는 임베디드 서버 또는 NoOp 구현으로 교체한다.
+  # 실제 Redis 가 없으면 TokenBlacklistService 관련 Bean 만 @MockitoBean 처리하면 된다.
+  data:
+    redis:
+      host: localhost
+      port: 6370          # 실제 포트와 다른 값 — 없으면 ConnectionRefused 로 빠짐
+
+  ai:
+    openai:
+      api-key: "test-key-not-used"      # MockitoBean 으로 대체하므로 실제 호출 안 됨
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+        dimensions: 1536
+
+# JWT 비밀 키 — 테스트 전용 고정 값 (운영 환경과 다름)
+jwt:
+  secret: "test-secret-key-minimum-256-bits-for-hmac-sha256-algorithm-padding"
+  expiration: 3600
+  refreshExpiration: 604800000

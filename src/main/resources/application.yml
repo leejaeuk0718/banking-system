@@ -1,0 +1,66 @@
+spring:
+  application:
+    name: medical_rag
+
+  # ── 비즈니스 데이터(User/ChatMessage 등) + 벡터스토어를 같은 PostgreSQL 인스턴스에 둔다.
+  #    pgvector 확장은 PostgreSQL 위에서만 동작하므로 의료 RAG 에선 PG 단일 DB 권장.
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/medical_rag}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+
+  # ── 의료 문서 업로드 한도
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+  # ── 토큰 블랙리스트 / 세션 캐시
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: 6379
+
+  # ── Spring AI : OpenAI Chat + Embedding
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        options:
+          model: gpt-4o-mini
+          temperature: 0.7
+      embedding:
+        options:
+          model: text-embedding-3-small   # 1536 차원
+
+    # ── VectorStore : pgvector
+    vectorstore:
+      pgvector:
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 1536                  # 위 임베딩 모델과 반드시 일치
+        initialize-schema: true           # 최초 기동 시 vector 확장 + 테이블 자동 생성
+        schema-name: public
+        table-name: medical_documents
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 3600              # access 토큰 만료 (초) — JwtUtil 에서 *1000 처리됨
+  refreshExpiration: 604800000  # refresh 토큰 만료 (밀리초) — 7일
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
